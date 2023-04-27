@@ -43,7 +43,11 @@ export class CreateAdminDto extends CreateUserDto {
   readonly role: Role;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto extends PartialType(CreateUserDto) {
+  @ApiProperty()
+  @IsEnum(Role)
+  readonly role: Role;
+}
 
 export class DefaultColumnsResponse extends CreateUserDto {
   @ApiProperty()

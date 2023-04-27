@@ -17,6 +17,10 @@ export class CreateClinicDto {
   @ApiProperty()
   @IsOptional()
   readonly currency: string;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly headQuarterId: number;
 }
 
 export class UpdateClinicDto extends PartialType(CreateClinicDto) {}

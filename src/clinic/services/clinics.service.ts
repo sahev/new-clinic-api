@@ -21,7 +21,7 @@ export class ClinicsService {
     });
 
     if (clinic) {
-      throw new BadRequestException();
+      throw new BadRequestException('This alias already exists');
     }
 
     const createdClinic = this.clinicRepository.create(createClinicDto);

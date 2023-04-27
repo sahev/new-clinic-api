@@ -60,9 +60,9 @@ export class UsersController {
     type: DefaultColumnsResponse,
   })
   @ApiBearerAuth('access-token')
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Get('all/:clinicId')
+  findAllByClinicId(@Param('clinicId') clinicId: number) {
+    return this.usersService.findAllByClinicId(clinicId);
   }
 
   @ApiBearerAuth('access-token')

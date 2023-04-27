@@ -14,4 +14,7 @@ export class Clinic extends DefaultEntity {
 
   @Column()
   currency: string;
+
+  @Column({ default: null })
+  headQuarterId: number;
 }

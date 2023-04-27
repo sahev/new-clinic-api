@@ -39,9 +39,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         HttpStatus.UNAUTHORIZED,
       );
     }
-
-    console.log(user, 'user');
-
     return user;
   }
 }

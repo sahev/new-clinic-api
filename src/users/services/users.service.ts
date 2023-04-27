@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import {
   CreateAdminDto,
   CreateUserDto,
@@ -44,8 +44,10 @@ export class UsersService {
     return saveUser;
   }
 
-  async findAll() {
-    return this.userRepository.find();
+  async findAllByClinicId(id: number) {
+    return this.userRepository.find({
+      where: { clinicId: id, role: Not('super') },
+    });
   }
 
   async findByEmailAndGetPassword(email: string) {
