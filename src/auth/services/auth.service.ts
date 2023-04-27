@@ -20,6 +20,7 @@ export class AuthService {
       password: string;
       id: number;
       role: string;
+      clinicId: number;
     } = await this.usersService.findByEmailAndGetPassword(email);
 
     if (user) {
@@ -46,7 +47,12 @@ export class AuthService {
   }
 
   jwtToken(user: PayloadToken) {
-    const payload: PayloadToken = { role: user.role, id: user.id };
+    const payload: PayloadToken = {
+      role: user.role,
+      id: user.id,
+      clinicId: user.clinicId,
+    };
+
     return {
       accessToken: this.jwtService.sign(payload),
     };

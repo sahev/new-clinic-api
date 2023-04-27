@@ -13,6 +13,7 @@ import {
   UpdateUserDto,
 } from '../dto/create-user.dto';
 import { User } from '../entities/user.entity';
+import { Role } from 'src/auth/models/roles.model';
 
 @Injectable()
 export class UsersService {
@@ -27,11 +28,17 @@ export class UsersService {
     });
 
     if (user) {
-      throw new BadRequestException();
+      throw new BadRequestException('Email already exists');
     }
 
-    const createdUser = await this.userRepository.create(createUserDto);
+    const createdUser = this.userRepository.create(createUserDto);
+
+    if (createUserDto.isFirstUser) {
+      createdUser.role = Role.ADMIN;
+    }
+
     const saveUser = await this.userRepository.save(createdUser);
+
     delete saveUser.password;
     delete saveUser.refreshToken;
     return saveUser;
@@ -43,7 +50,7 @@ export class UsersService {
 
   async findByEmailAndGetPassword(email: string) {
     return await this.userRepository.findOne({
-      select: ['id', 'password', 'role'],
+      select: ['id', 'password', 'role', 'clinicId'],
       where: { email },
     });
   }
@@ -57,9 +64,19 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOneOrFail({
+    return await this.userRepository.find({
       where: { email },
     });
+  }
+
+  async emailExists(email: string) {
+    const user = await this.userRepository.find({
+      where: { email },
+    });
+
+    if (user.length > 0) return true;
+
+    return false;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import config from './config';
 import { enviroments } from './environments';
 import { UsersModule } from './users/users.module';
+import { ClinicsModule } from './clinic/clinics.module';
 
 @Module({
   imports: [
@@ -27,18 +28,19 @@ import { UsersModule } from './users/users.module';
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
         return {
-          type: 'postgres',
-          host: configService.postgres.host,
-          port: configService.postgres.port,
-          database: configService.postgres.name,
-          username: configService.postgres.user,
-          password: configService.postgres.password,
+          type: 'mysql',
+          host: configService.mysql.host,
+          port: configService.mysql.port,
+          database: configService.mysql.name,
+          username: configService.mysql.user,
+          password: configService.mysql.password,
           autoLoadEntities: true,
           keepConnectionAlive: true,
         };
       },
     }),
     UsersModule,
+    ClinicsModule,
     AuthModule,
   ],
   controllers: [],

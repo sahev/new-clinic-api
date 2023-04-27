@@ -1,5 +1,12 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Role } from '../../auth/models/roles.model';
 
 export class CreateUserDto {
@@ -18,10 +25,16 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly firstName: string;
 
-  @ApiProperty()
+  @ApiProperty({ default: '' })
   @IsString()
-  @IsNotEmpty()
   readonly lastName: string;
+
+  @IsOptional()
+  readonly isFirstUser: boolean;
+
+  @ApiProperty()
+  @IsNumber()
+  readonly clinicId: number;
 }
 
 export class CreateAdminDto extends CreateUserDto {

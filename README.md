@@ -35,7 +35,7 @@
    - `REFRESH_TOKEN_EXPIRATION`: expiration time of the JWT refresh token
    - `JWT_SECRET`: secret key used by JWT to encode access token
    - `JWT_REFRESH_SECRET`: secret key used by JWT to encode refresh token
-   - `DATABASE_PORT`: port used by the API
+   - `API_PORT`: port used by the API
 
 ## Database configuration
 

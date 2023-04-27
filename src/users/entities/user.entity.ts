@@ -1,7 +1,8 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Role } from '../../auth/models/roles.model';
 import { DefaultEntity } from '../../utils/entities/default.entity';
+import { Clinic } from 'src/clinic/entities/clinic.entity';
 
 @Entity('users')
 export class User extends DefaultEntity {
@@ -30,6 +31,13 @@ export class User extends DefaultEntity {
     default: Role.CUSTOMER,
   })
   role: Role;
+
+  @Column()
+  clinicId: number;
+
+  @ManyToOne(() => Clinic, (clinic) => clinic.id)
+  @JoinColumn({ name: 'clinicId' })
+  clinic: Clinic;
 
   @BeforeInsert()
   async hashPassword() {

@@ -3,17 +3,21 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { json, urlencoded } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  const enableCors = configService.get<boolean>('ENABLE_CORS');
-  const port = configService.get<number>('DATABASE_PORT');
+  const enableCors = configService.get('ENABLE_CORS');
+  const port = configService.get('API_PORT');
 
   if (enableCors) {
     app.enableCors();
   }
+
+  app.use(json({ limit: '10mb' }));
+  app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.useGlobalPipes(
     new ValidationPipe({

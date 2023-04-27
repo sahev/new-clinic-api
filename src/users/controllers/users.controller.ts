@@ -15,10 +15,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from '../../auth/decorators/public.decorator';
-import { Roles } from '../../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Role } from '../../auth/models/roles.model';
 import {
   CreateAdminDto,
   CreateUserDto,
@@ -50,7 +48,7 @@ export class UsersController {
     type: DefaultColumnsResponse,
   })
   @ApiBearerAuth('access-token') // in the swagger documentation, a bearer token is required to access this endpoint
-  @Roles(Role.ADMIN) // makes the endpoint accessible only by the admin
+  // @Roles(Role.SUPER, Role.ADMIN) // m akes the endpoint accessible only by the admin
   @Post('admin')
   createAdmin(@Body() creatAdminDto: CreateAdminDto) {
     return this.usersService.create(creatAdminDto);
@@ -62,7 +60,6 @@ export class UsersController {
     type: DefaultColumnsResponse,
   })
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -73,23 +70,26 @@ export class UsersController {
     status: 200,
     type: DefaultColumnsResponse,
   })
-  @Roles(Role.ADMIN)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @ApiBearerAuth('access-token')
-  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @Public()
+  @Get('email/:email')
+  emailExists(@Param('email') id: string) {
+    return this.usersService.emailExists(id);
   }
 }
