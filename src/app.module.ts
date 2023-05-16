@@ -7,6 +7,8 @@ import config from './config';
 import { enviroments } from './environments';
 import { UsersModule } from './users/users.module';
 import { ClinicsModule } from './clinic/clinics.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -25,15 +27,18 @@ import { ClinicsModule } from './clinic/clinics.module';
       },
     }),
     TypeOrmModule.forRootAsync({
+      name: 'default',
       inject: [config.KEY],
       useFactory: (configService: ConfigType<typeof config>) => {
         return {
-          type: 'mysql',
-          host: configService.mysql.host,
-          port: configService.mysql.port,
-          database: configService.mysql.name,
-          username: configService.mysql.user,
-          password: configService.mysql.password,
+          synchronize: true,
+          type: configService.db.type as any,
+          host: configService.db.host,
+          port: configService.db.port,
+          database: configService.db.name,
+          username: configService.db.user,
+          password: configService.db.password,
+          ssl: configService.db.ssl,
           autoLoadEntities: true,
           keepConnectionAlive: true,
         };
@@ -42,6 +47,8 @@ import { ClinicsModule } from './clinic/clinics.module';
     UsersModule,
     ClinicsModule,
     AuthModule,
+    CategoriesModule,
+    ServicesModule,
   ],
   controllers: [],
   providers: [],

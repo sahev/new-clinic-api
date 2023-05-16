@@ -5,12 +5,14 @@ export default registerAs('config', () => {
     database: {
       port: process.env.API_PORT,
     },
-    mysql: {
-      host: process.env.MYSQL_HOST,
-      port: parseInt(process.env.MYSQL_PORT, 10) || 5432,
-      name: process.env.MYSQL_NAME,
-      password: process.env.MYSQL_PASSWORD,
-      user: process.env.MYSQL_USER,
+    db: {
+      type: process.env.DB_TYPE,
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      name: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      user: process.env.DB_USER,
+      ssl: /^true$/i.test(process.env.DB_SSL.toLowerCase()), // true for external databases
     },
     jwt: {
       jwtSecret: process.env.JWT_SECRET,

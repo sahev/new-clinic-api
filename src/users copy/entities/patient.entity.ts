@@ -3,12 +3,9 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, OneT
 import { Role } from '../../auth/models/roles.model';
 import { DefaultEntity } from '../../utils/entities/default.entity';
 import { Clinic } from 'src/clinic/entities/clinic.entity';
-import { Contact } from './contact-user.entity';
-import * as dotenv from 'dotenv'
-dotenv.config()
 
 @Entity('users')
-export class User extends DefaultEntity {
+export class Patient extends DefaultEntity {
   @Column({ unique: true })
   email: string;
 
@@ -50,7 +47,7 @@ export class User extends DefaultEntity {
   @Column({ default: null })
   birthDate: Date;
 
-  @Column({ type: (process.env.DB_TYPE === 'postgres' ? 'text' : 'longtext') , default: null })
+  @Column({ type: 'longtext' , default: null })
   profileImage: Buffer;
 
   @ManyToOne(() => Clinic, (clinic) => clinic.id)
@@ -64,10 +61,6 @@ export class User extends DefaultEntity {
 
   @Column({default: null})
   speciality: string;
-
-  @OneToOne(() => Contact, contact => contact.id)
-  @JoinColumn({name: 'contactId'})
-  contact: Contact;
 
   @BeforeInsert()
   @BeforeUpdate()

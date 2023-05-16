@@ -21,39 +21,33 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Role } from '../../auth/models/roles.model';
 import {
-  CreateClinicDto,
+  CreateServiceDto,
   DefaultColumnsResponse,
-  UpdateClinicDto,
-} from '../dto/create-clinic.dto';
-import { ClinicsService } from '../services/clinics.service';
+  UpdateServiceDto,
+} from '../dto/create-service.dto';
+import { ServicesService } from '../services/services.service';
 
-@ApiTags('clinics') // put the name of the controller in swagger
-@Controller('clinics')
+@ApiTags('Services') // put the name of the controller in swagger
+@Controller('services')
 @UseGuards(JwtAuthGuard, RolesGuard) //  makes the all routs as private by default
-export class ClinicsController {
-  constructor(private readonly clinicsService: ClinicsService) {}
+export class ServicesController {
+  constructor(private readonly serviceService: ServicesService) {}
 
-  @ApiOperation({ summary: 'create a clinic' })
+  @ApiOperation({ summary: 'create a service' })
   @ApiResponse({
     status: 201,
     type: DefaultColumnsResponse,
   })
   @Public() // makes the endpoint accessible to all
   @Post()
-  create(@Body() createClinicDto: CreateClinicDto) {
-    return this.clinicsService.create(createClinicDto);
+  create(@Body() createServiceDto: CreateServiceDto) {
+    return this.serviceService.create(createServiceDto);
   }
 
   @Public()
   @Get()
   findAll(@Headers('clinicId') id: number) {
-    return this.clinicsService.findAll(id);
-  }
-
-  @Public()
-  @Get('alias/:alias')
-  findByAlias(@Param('alias') alias: string) {
-    return this.clinicsService.findByAlias(alias);
+    return this.serviceService.findAll(id);
   }
 
   @ApiBearerAuth('access-token')
@@ -63,24 +57,24 @@ export class ClinicsController {
   })
   @Get('id/:id')
   findOne(@Param('id') id: number) {
-    return this.clinicsService.findOne(+id);
+    return this.serviceService.findOne(+id);
   }
 
   @Public()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateClinicDto) {
-    return this.clinicsService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
+    return this.serviceService.update(+id, updateServiceDto);
   }
 
   @ApiBearerAuth('access-token')
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.clinicsService.remove(+id);
+    return this.serviceService.remove(+id);
   }
 
   @ApiBearerAuth('access-token')
   @Patch('toggleStatus/:id')
   toggleStatus(@Param('id') id: number) {
-    return this.clinicsService.toggleStatus(id);
+    return this.serviceService.toggleStatus(id);
   }
 }

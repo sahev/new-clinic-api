@@ -8,23 +8,20 @@ import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
 import { Not, Like, Repository, getRepository } from 'typeorm';
 import {
-  CreateAdminDto,
-  CreateUserDto,
-  UpdateUserDto,
-} from '../dto/create-user.dto';
-import { User } from '../entities/user.entity';
+  CreatePatientDto,
+  UpdatePatientDto,
+} from '../dto/create-patient.dto';
+import { Patient } from '../entities/patient.entity';
 import { Role } from 'src/auth/models/roles.model';
-import { Contact } from '../entities/contact-user.entity';
 
 @Injectable()
-export class UsersService {
+export class PatientsService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Contact) private contactRepository: Repository<Contact>,
+    @InjectRepository(Patient) private patientRepository: Repository<Patient>
   ) {}
 
-  async create(createUserDto: CreateUserDto | CreateAdminDto) {
-    const user = await this.userRepository.findOne({
+  async create(createUserDto: CreatePatientDto) {
+    const user = await this.patientRepository.findOne({
       email: createUserDto.email,
     });
 
@@ -32,13 +29,13 @@ export class UsersService {
       throw new BadRequestException('Email already exists');
     }
 
-    const createdUser = this.userRepository.create(createUserDto);
+    const createdUser = this.patientRepository.create(createUserDto);
 
     if (createUserDto.isFirstUser) {
       createdUser.role = Role.ADMIN;
     }
 
-    const saveUser = await this.userRepository.save(createdUser);
+    const saveUser = await this.patientRepository.save(createdUser);
 
     delete saveUser.password;
     delete saveUser.refreshToken;
@@ -46,7 +43,7 @@ export class UsersService {
   }
 
   async findAllByClinicId(id: number) {
-    return this.userRepository.find({
+    return this.patientRepository.find({
       where: [
         { clinicId: id, role: Not('super')  }
       ],
@@ -55,7 +52,7 @@ export class UsersService {
   }
 
   async findAllByHeadQuarterId(id: number) {
-    return this.userRepository.find({
+    return this.patientRepository.find({
       where: [
         { clinicId: id, role: Not('super')  },
         { headQuarterId: id, role: Not('super')  }
@@ -65,14 +62,14 @@ export class UsersService {
   }
 
   async findByEmailAndGetPassword(email: string) {
-    return await this.userRepository.findOne({
+    return await this.patientRepository.findOne({
       select: ['id', 'password', 'role', 'clinicId'],
       where: { email },
     });
   }
 
   async findOne(id: number) {
-    return await getRepository(User).findOne({
+    return await getRepository(Patient).findOne({
       where: { id },
       relations: ['contact']
     });
@@ -80,7 +77,7 @@ export class UsersService {
 
   async findAllByName(clinicId: number, name: string) {
 
-    return this.userRepository.find({
+    return this.patientRepository.find({
       where: [
         { clinicId, firstName: Like(`%${name}%`) },
         { clinicId, email: Like(`%${name}%`) }
@@ -90,17 +87,17 @@ export class UsersService {
   }
 
   async findById(userId: number) {
-    return await this.userRepository.findOneOrFail(userId);
+    return await this.patientRepository.findOneOrFail(userId);
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.find({
+    return await this.patientRepository.find({
       where: { email },
     });
   }
 
   async emailExists(email: string) {
-    const user = await this.userRepository.find({
+    const user = await this.patientRepository.find({
       where: { email },
     });
 
@@ -109,8 +106,8 @@ export class UsersService {
     return false;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.preload({
+  async update(id: number, updateUserDto: UpdatePatientDto) {
+    const user = await this.patientRepository.preload({
       id,
       ...updateUserDto,
     });
@@ -118,27 +115,19 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
 
-    let contact: Contact;
-
-    if (updateUserDto.contact) {
-      contact = await this.contactRepository.save(updateUserDto.contact)
-      user.contactId = contact.id
-      user.contact = contact
-    }
-
-    await this.userRepository.save(user);
+    await this.patientRepository.save(user);
 
     return user
   }
 
   async remove(id: number) {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.patientRepository.findOne(id);
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
 
-    return this.userRepository.remove(user);
+    return this.patientRepository.remove(user);
   }
 
   async setCurrentRefreshToken(refreshToken: string, userId: number) {
@@ -146,7 +135,7 @@ export class UsersService {
     const hash = createHash('sha256').update(refreshToken).digest('hex');
 
     const currentHashedRefreshToken = await bcrypt.hashSync(hash, 10);
-    return await this.userRepository.update(userId, {
+    return await this.patientRepository.update(userId, {
       refreshToken: currentHashedRefreshToken,
     });
   }
@@ -154,7 +143,7 @@ export class UsersService {
   async removeRefreshToken(userId: number) {
     await this.findById(userId);
 
-    return this.userRepository.update(
+    return this.patientRepository.update(
       { id: userId },
       {
         refreshToken: null,
@@ -163,7 +152,7 @@ export class UsersService {
   }
 
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
-    const user = await this.userRepository.findOne({
+    const user = await this.patientRepository.findOne({
       select: ['id', 'refreshToken', 'role'],
       where: { id: userId },
     });
@@ -177,17 +166,5 @@ export class UsersService {
     if (isRefreshTokenMatching) {
       return { id: user.id, role: user.role };
     }
-  }
-
-  async toggleStatus(id: number) {
-    let user = await this.userRepository.findOne({ where: { id: id }} )
-    user.active = !user.active
-    this.userRepository.save(user)
-  }
-
-  async togglePerformServiceStatus(id: number) {
-    let user = await this.userRepository.findOne({ where: { id: id }} )
-    user.performService = !user.performService
-    this.userRepository.save(user)
   }
 }

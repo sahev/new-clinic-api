@@ -21,6 +21,13 @@ export class CreateClinicDto {
   @ApiProperty()
   @IsOptional()
   readonly headQuarterId: number;
+
+  @ApiProperty()
+  readonly active: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly description: string;
 }
 
 export class UpdateClinicDto extends PartialType(CreateClinicDto) {}

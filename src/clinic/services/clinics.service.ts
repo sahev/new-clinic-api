@@ -4,20 +4,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { CreateClinicDto, UpdateClinicDto } from '../dto/create-clinic.dto';
 import { Clinic } from '../entities/clinic.entity';
 
 @Injectable()
 export class ClinicsService {
-  constructor(
+  constructor (
     @InjectRepository(Clinic)
     private clinicRepository: Repository<Clinic>,
-  ) {}
+  ) { }
 
-  async create(createClinicDto: CreateClinicDto) {
+  async create (createClinicDto: CreateClinicDto) {
     const clinic = await this.clinicRepository.findOne({
       alias: createClinicDto.alias,
+      headQuarterId: createClinicDto.headQuarterId
     });
 
     if (clinic) {
@@ -36,45 +37,58 @@ export class ClinicsService {
     return saveClinic;
   }
 
-  async findAll() {
-    return this.clinicRepository.find();
+  async findAll (id: number) {
+    return this.clinicRepository.find({
+      where: { headQuarterId: id }
+    });
   }
 
-  async findOne(id: number) {
-    return await this.clinicRepository.findOne(id);
+  async findOne (id: number) {
+    let clinicalUnits = await this.clinicRepository.find({
+      where: { headQuarterId: id }
+    })
+    let clinic = await this.clinicRepository.findOne(id);
+
+    clinic.clinicalUnits = clinicalUnits
+
+    return clinic
   }
 
-  async findById(clinicId: number) {
+  async findById (clinicId: number) {
     return await this.clinicRepository.findOneOrFail(clinicId);
   }
 
-  async findByAlias(alias: string) {
+  async findByAlias (alias: string) {
     return await this.clinicRepository.find({
       where: { alias },
     });
   }
 
-  async update(id: number, updateClinicDto: UpdateClinicDto) {
-    // let e = Buffer.from("\\x" + Buffer.from(updateClinicDto.logo.toString(), "base64").toString("hex"))
-
-    const user = await this.clinicRepository.preload({
+  async update (id: number, updateClinicDto: UpdateClinicDto) {
+    const clinic = await this.clinicRepository.preload({
       id,
       ...updateClinicDto,
     });
 
-    if (!user) {
+    if (!clinic) {
       throw new NotFoundException(`Clinic with id ${id} does not exist`);
     }
-    return this.clinicRepository.save(user);
+    return this.clinicRepository.save(clinic);
   }
 
-  async remove(id: number) {
-    const user = await this.clinicRepository.findOne(id);
+  async remove (id: number) {
+    const clinic = await this.clinicRepository.findOne(id);
 
-    if (!user) {
+    if (!clinic) {
       throw new NotFoundException(`User with id ${id} does not exist`);
     }
 
-    return this.clinicRepository.remove(user);
+    return this.clinicRepository.remove(clinic);
+  }
+
+  async toggleStatus (id: number) {
+    let clinic = await this.clinicRepository.findOne({ where: { id: id } })
+    clinic.active = !clinic.active
+    this.clinicRepository.save(clinic)
   }
 }

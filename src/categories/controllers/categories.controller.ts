@@ -16,44 +16,36 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Public } from '../../auth/decorators/public.decorator';
-import { Roles } from '../../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Role } from '../../auth/models/roles.model';
 import {
-  CreateClinicDto,
+  CreateCategoryDto,
   DefaultColumnsResponse,
-  UpdateClinicDto,
-} from '../dto/create-clinic.dto';
-import { ClinicsService } from '../services/clinics.service';
+  UpdateCategoryDto,
+} from '../dto/create-category.dto';
+import { CategoriesService } from '../services/categories.service';
 
-@ApiTags('clinics') // put the name of the controller in swagger
-@Controller('clinics')
+@ApiTags('Categories') // put the name of the controller in swagger
+@Controller('categories')
 @UseGuards(JwtAuthGuard, RolesGuard) //  makes the all routs as private by default
-export class ClinicsController {
-  constructor(private readonly clinicsService: ClinicsService) {}
+export class CategoriesController {
+  constructor(private readonly categoriesService: CategoriesService) {}
 
-  @ApiOperation({ summary: 'create a clinic' })
+  @ApiOperation({ summary: 'create a category' })
   @ApiResponse({
     status: 201,
     type: DefaultColumnsResponse,
   })
   @Public() // makes the endpoint accessible to all
   @Post()
-  create(@Body() createClinicDto: CreateClinicDto) {
-    return this.clinicsService.create(createClinicDto);
+  create(@Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoriesService.create(createCategoryDto);
   }
 
   @Public()
   @Get()
   findAll(@Headers('clinicId') id: number) {
-    return this.clinicsService.findAll(id);
-  }
-
-  @Public()
-  @Get('alias/:alias')
-  findByAlias(@Param('alias') alias: string) {
-    return this.clinicsService.findByAlias(alias);
+    return this.categoriesService.findAll(id);
   }
 
   @ApiBearerAuth('access-token')
@@ -63,24 +55,24 @@ export class ClinicsController {
   })
   @Get('id/:id')
   findOne(@Param('id') id: number) {
-    return this.clinicsService.findOne(+id);
+    return this.categoriesService.findOne(+id);
   }
 
   @Public()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateClinicDto) {
-    return this.clinicsService.update(+id, updateUserDto);
+  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+    return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @ApiBearerAuth('access-token')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.clinicsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.categoriesService.remove(+id).then(() => true).catch(() => false);
   }
 
   @ApiBearerAuth('access-token')
   @Patch('toggleStatus/:id')
   toggleStatus(@Param('id') id: number) {
-    return this.clinicsService.toggleStatus(id);
+    return this.categoriesService.toggleStatus(id);
   }
 }

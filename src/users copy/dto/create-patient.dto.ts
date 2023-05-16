@@ -11,9 +11,8 @@ import {
 } from 'class-validator';
 import { Role } from '../../auth/models/roles.model';
 import { isTypedArray } from 'util/types';
-import { Contact } from '../entities/contact-user.entity';
 
-export class CreateUserDto {
+export class CreatePatientDto {
   @ApiProperty()
   @IsString()
   @IsEmail()
@@ -68,23 +67,9 @@ export class CreateUserDto {
   readonly profileImage: Buffer;
 }
 
-export class CreateAdminDto extends CreateUserDto {
-  @ApiProperty()
-  @IsEnum(Role)
-  readonly role: Role;
-}
+export class UpdatePatientDto extends PartialType(CreatePatientDto) { }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @ApiProperty()
-  @IsOptional()
-  readonly role: Role;
-
-  @ApiProperty()
-  @IsOptional()
-  readonly contact: Contact
-}
-
-export class DefaultColumnsResponse extends CreateUserDto {
+export class DefaultColumnsResponse extends CreatePatientDto {
   @ApiProperty()
   readonly id: number;
 
