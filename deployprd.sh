@@ -20,5 +20,5 @@ echo "No such container"
 fi
 
 echo "Deploying the updated container"
-docker run -itd -p 3000:3000 -d --name eclinic
+docker run -p 3000:3000 -d eclinic
 echo "Deploying the container"
