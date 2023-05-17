@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { ClinicsModule } from './clinic/clinics.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ServicesModule } from './services/services.module';
+import { HealthModule } from './healthcheck/healthcheck.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ServicesModule } from './services/services.module';
         };
       },
     }),
+    HealthModule,
     UsersModule,
     ClinicsModule,
     AuthModule,
