@@ -15,7 +15,7 @@ jobs:
       with:
         command: |
           cd dev/${{ github.event.repository.name }}
-          touch .env
+          touch ~/envs/development
           echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
           echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env
           echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> .env
