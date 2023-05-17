@@ -14,6 +14,7 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          cd dev/${{ github.event.repository.name }}
           touch .env
           echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
           echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env
