@@ -4,12 +4,36 @@ on:
     branches: [ develop ]
 jobs:
 
+
+
   update:
     name: checkout
     runs-on: ubuntu-latest
     environment:
       name: development
     steps:
+    - name: 'Set env file'
+        run: |
+          touch .env
+          echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
+          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env
+          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> .env
+
+          echo DB_TYPE=${{ vars.DB_TYPE }} >> .env
+          echo DB_NAME=${{ vars.DB_NAME }} >> .env
+          echo DB_PORT=${{ vars.DB_PORT }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_USER=${{ vars.DB_USER }} >> .env
+          echo DB_HOST=${{ vars.DB_HOST }} >> .env
+          echo DB_SSL=${{ vars.DB_SSL }} >> .env
+
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env
+
+          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> .env
+          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> .env
+
+          cat .env
     - name: Updating repository
       id: checkout
       uses: fifsky/ssh-action@master
@@ -67,8 +91,8 @@ jobs:
           docker stop containerdev
           docker rm containerdev
 
-          printf "\n\n starting docker server on port ${{ vars.INTERNAL_APP_PORT }} ....\n\n "
-          docker run -d -p ${{ vars.INTERNAL_APP_PORT }}:3030 --name containerdev --restart=always $(head -1 new_image_id.txt)
+          printf "\n\n starting docker server on port ${{ vars.EXTERNAL_APP_PORT }} ....\n\n "
+          docker run -d -p ${{ vars.EXTERNAL_APP_PORT }}:${{ vars.INTERNAL_APP_PORT }} --name containerdev --restart=always $(head -1 new_image_id.txt)
 
         host: ${{ vars.HOST }}
         user: ${{ vars.SSH_USER }}
@@ -82,8 +106,8 @@ jobs:
         command: |
           cd dev/${{ github.event.repository.name }}
 
-          printf "\n\n restarting docker server on port ${{ vars.INTERNAL_APP_PORT }} ....\n\n "
-          docker run -d -p ${{ vars.INTERNAL_APP_PORT }}:3030 --name containerdev --restart=always $(head -1 old_image_id.txt)
+          printf "\n\n restarting docker server on port ${{ vars.EXTERNAL_APP_PORT }} ....\n\n "
+          docker run -d -p ${{ vars.EXTERNAL_APP_PORT }}:${{ vars.INTERNAL_APP_PORT }} --name containerdev --restart=always $(head -1 old_image_id.txt)
 
           docker rmi $(head -1 new_image_id.txt)
 
