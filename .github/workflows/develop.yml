@@ -1,0 +1,105 @@
+name: Develop
+on:
+  push:
+    branches: [ develop ]
+jobs:
+
+  update:
+    name: checkout
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+    - name: Updating repository
+      id: checkout
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd dev/${{ github.event.repository.name }}
+          printf "\n\n updating repository....\n\n "
+          git reset --hard origin/develop
+          git pull origin develop
+
+          echo "$(docker inspect --format="{{.Image}}" $(docker ps -a --format "table {{.Names}}" | grep containerdev ))" > old_image_id.txt
+
+          echo "old image: $(head -1 old_image_id.txt)"
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
+
+  build:
+    name: build
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+    - name: building image
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd dev/${{ github.event.repository.name }}
+
+          printf "\n\n generating docker image....\n\n "
+          docker build -t ${{ github.event.repository.name }}:dev .
+
+          echo "$(docker images --filter "reference=${{ github.event.repository.name }}:dev" --format {{.ID}})" > new_image_id.txt
+
+          echo "new image: $(head -1 new_image_id.txt)"
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
+
+  deploy-dev:
+    name: deploy-dev
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: http://${{ vars.HOST }}:${{ vars.EXTERNAL_APP_PORT }}/
+    steps:
+    - name: starting server
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd dev/${{ github.event.repository.name }}
+
+          docker stop containerdev
+          docker rm containerdev
+
+          printf "\n\n starting docker server on port ${{ vars.INTERNAL_APP_PORT }} ....\n\n "
+          docker run -d -p ${{ vars.INTERNAL_APP_PORT }}:3030 --name containerdev --restart=always $(head -1 new_image_id.txt)
+
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
+
+    - name: restart last container
+      uses: fifsky/ssh-action@master
+
+      if: ${{ failure() }}
+      with:
+        command: |
+          cd dev/${{ github.event.repository.name }}
+
+          printf "\n\n restarting docker server on port ${{ vars.INTERNAL_APP_PORT }} ....\n\n "
+          docker run -d -p ${{ vars.INTERNAL_APP_PORT }}:3030 --name containerdev --restart=always $(head -1 old_image_id.txt)
+
+          docker rmi $(head -1 new_image_id.txt)
+
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
+
+    - name: clean images
+      uses: fifsky/ssh-action@master
+
+      if: ${{ success() }}
+      with:
+        command: |
+          cd dev/${{ github.event.repository.name }}
+          docker rmi $(head -1 old_image_id.txt)
+
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
