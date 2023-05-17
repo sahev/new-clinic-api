@@ -30,7 +30,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "pretest:e2e": "docker-compose up -d postgresTest",
     "posttest:e2e": "docker-compose stop postgresTest && docker-compose rm -f postgresTest",
-    "prepare": "husky install",
     "reinstall": "docker-compose stop postgres && docker-compose rm -f postgres && npm run infra:up && npm run migration:run && npm run seed:run "
   },
   "dependencies": {
@@ -70,7 +69,6 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
     "jest": "^27.2.5",
     "lint-staged": "^12.3.5",
     "prettier": "^2.3.2",
