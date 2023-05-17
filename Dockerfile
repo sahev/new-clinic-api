@@ -21,7 +21,7 @@ RUN npm run build
 
 EXPOSE 3000 3131 3232
 
-ARG request_domain=dev
+ARG NODE_ENV=dev
 
 ENV NODE_ENV=$NODE_ENV
 
