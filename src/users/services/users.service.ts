@@ -18,13 +18,13 @@ import { Contact } from '../entities/contact-user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(
+  constructor (
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Contact) private contactRepository: Repository<Contact>,
-  ) {}
+  ) { }
 
-  async create(createUserDto: CreateUserDto | CreateAdminDto) {
-    const user = await this.userRepository.findOne({
+  async create (createUserDto: CreateUserDto | CreateAdminDto) {
+    const user = await this.userRepository.findOneBy({
       email: createUserDto.email,
     });
 
@@ -45,40 +45,40 @@ export class UsersService {
     return saveUser;
   }
 
-  async findAllByClinicId(id: number) {
+  async findAllByClinicId (id: number) {
     return this.userRepository.find({
       where: [
-        { clinicId: id, role: Not('super')  }
+        { clinicId: id, role: Not(Role.SUPER) }
       ],
       relations: ['contact']
     });
   }
 
-  async findAllByHeadQuarterId(id: number) {
+  async findAllByHeadQuarterId (id: number) {
     return this.userRepository.find({
       where: [
-        { clinicId: id, role: Not('super')  },
-        { headQuarterId: id, role: Not('super')  }
+        { clinicId: id, role: Not(Role.SUPER) },
+        { headQuarterId: id, role: Not(Role.SUPER) }
       ],
       relations: ['contact']
     });
   }
 
-  async findByEmailAndGetPassword(email: string) {
+  async findByEmailAndGetPassword (email: string) {
+    const {id, password, role, clinicId} = await this.userRepository.findOneBy(
+      { email }
+    );
+    return {id, password, role, clinicId}
+  }
+
+  async findOneBy (id: number) {
     return await this.userRepository.findOne({
-      select: ['id', 'password', 'role', 'clinicId'],
-      where: { email },
-    });
-  }
-
-  async findOne(id: number) {
-    return await getRepository(User).findOne({
       where: { id },
       relations: ['contact']
     });
   }
 
-  async findAllByName(clinicId: number, name: string) {
+  async findAllByName (clinicId: number, name: string) {
 
     return this.userRepository.find({
       where: [
@@ -89,17 +89,17 @@ export class UsersService {
     });
   }
 
-  async findById(userId: number) {
-    return await this.userRepository.findOneOrFail(userId);
+  async findById (userId: number) {
+    return await this.userRepository.findOneByOrFail({ id: userId });
   }
 
-  async findByEmail(email: string) {
+  async findByEmail (email: string) {
     return await this.userRepository.find({
       where: { email },
     });
   }
 
-  async emailExists(email: string) {
+  async emailExists (email: string) {
     const user = await this.userRepository.find({
       where: { email },
     });
@@ -109,7 +109,7 @@ export class UsersService {
     return false;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update (id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.preload({
       id,
       ...updateUserDto,
@@ -131,8 +131,8 @@ export class UsersService {
     return user
   }
 
-  async remove(id: number) {
-    const user = await this.userRepository.findOne(id);
+  async remove (id: number) {
+    const user = await this.userRepository.findOneBy({ id: id });
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
@@ -141,7 +141,7 @@ export class UsersService {
     return this.userRepository.remove(user);
   }
 
-  async setCurrentRefreshToken(refreshToken: string, userId: number) {
+  async setCurrentRefreshToken (refreshToken: string, userId: number) {
     //crypto is a node module, and bcrypt the maximum length of the hash is 60 characters, and token is longer than that, so we need to hash it
     const hash = createHash('sha256').update(refreshToken).digest('hex');
 
@@ -151,7 +151,7 @@ export class UsersService {
     });
   }
 
-  async removeRefreshToken(userId: number) {
+  async removeRefreshToken (userId: number) {
     await this.findById(userId);
 
     return this.userRepository.update(
@@ -162,13 +162,18 @@ export class UsersService {
     );
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
-    const user = await this.userRepository.findOne({
-      select: ['id', 'refreshToken', 'role'],
-      where: { id: userId },
-    });
+  async getUserIfRefreshTokenMatches (refreshTokenn: string, userId: number) {
+    const { id,
+      refreshToken,
+      role } = await this.userRepository.findOneBy({ id: userId });
 
-    const hash = createHash('sha256').update(refreshToken).digest('hex');
+    const user = {
+      id,
+      refreshToken,
+      role
+    }
+
+    const hash = createHash('sha256').update(refreshTokenn).digest('hex');
     const isRefreshTokenMatching = await bcrypt.compare(
       hash,
       user.refreshToken,
@@ -179,14 +184,14 @@ export class UsersService {
     }
   }
 
-  async toggleStatus(id: number) {
-    let user = await this.userRepository.findOne({ where: { id: id }} )
+  async toggleStatus (id: number) {
+    let user = await this.userRepository.findOneBy({ id: id })
     user.active = !user.active
     this.userRepository.save(user)
   }
 
-  async togglePerformServiceStatus(id: number) {
-    let user = await this.userRepository.findOne({ where: { id: id }} )
+  async togglePerformServiceStatus (id: number) {
+    let user = await this.userRepository.findOneBy({ id: id })
     user.performService = !user.performService
     this.userRepository.save(user)
   }

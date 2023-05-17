@@ -1,0 +1,25 @@
+NODE_ENV=test
+API_PORT=3000
+ENABLE_CORS=true
+
+# DB_TYPE=mysql
+# DB_NAME=newclinic
+# DB_PORT=3306
+# DB_PASSWORD=admin
+# DB_USER=admin
+# DB_HOST=localhost
+
+
+DB_TYPE=postgres
+DB_NAME=eclinicdb
+DB_PORT=5432
+DB_PASSWORD=bzKe6PyBI9SL
+DB_USER=sahev
+DB_HOST=ep-floral-night-245537.us-east-2.aws.neon.tech
+DB_SSL=true
+
+JWT_SECRET=secretTest
+JWT_REFRESH_SECRET=refreshSecretTest
+
+ACCESS_TOKEN_EXPIRATION=1d
+REFRESH_TOKEN_EXPIRATION=1y

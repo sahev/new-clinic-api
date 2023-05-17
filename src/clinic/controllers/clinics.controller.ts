@@ -62,8 +62,8 @@ export class ClinicsController {
     type: DefaultColumnsResponse,
   })
   @Get('id/:id')
-  findOne(@Param('id') id: number) {
-    return this.clinicsService.findOne(+id);
+  findOneBy(@Param('id') id: number) {
+    return this.clinicsService.findOne(id);
   }
 
   @Public()

@@ -16,7 +16,7 @@ export class CategoriesService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const category = await this.categoryRepository.findOne({
+    const category = await this.categoryRepository.findOneBy({
       name: createCategoryDto.name,
       clinicId: createCategoryDto.clinicId
     });
@@ -36,18 +36,16 @@ export class CategoriesService {
     );
   }
 
-  async findOne(id: number) {
-    return await this.categoryRepository.findOne(id);
+  async findOneBy(id: number) {
+    return await this.categoryRepository.findOneBy({id});
   }
 
   async findById(categoryId: number) {
-    return await this.categoryRepository.findOneOrFail(categoryId);
+    return await this.categoryRepository.findOneByOrFail({id: categoryId});
   }
 
   async findByAlias(alias: string) {
-    return await this.categoryRepository.find({
-      where: { alias },
-    });
+    return await this.categoryRepository.find({ where: { name: alias } });
   }
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
@@ -63,7 +61,7 @@ export class CategoriesService {
   }
 
   async remove(id: number) {
-    const category = await this.categoryRepository.findOne(id);
+    const category = await this.categoryRepository.findOneBy({id});
 
     if (!category) {
       throw new NotFoundException(`Category with id ${id} does not exist`);
@@ -73,7 +71,7 @@ export class CategoriesService {
   }
 
   async toggleStatus(id: number) {
-    let category = await this.categoryRepository.findOne({ where: { id: id }} )
+    let category = await this.categoryRepository.findOneBy({ id })
     category.active = !category.active
     this.categoryRepository.save(category)
   }

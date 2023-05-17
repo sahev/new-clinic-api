@@ -16,7 +16,7 @@ export class ServicesService {
   ) {}
 
   async create(createServiceDto: CreateServiceDto) {
-    const service = await this.serviceRepository.findOne({
+    const service = await this.serviceRepository.findOneBy({
       name: createServiceDto.name,
       clinicId: createServiceDto.clinicId
     });
@@ -45,12 +45,12 @@ export class ServicesService {
    })
   }
 
-  async findOne(id: number) {
-    return await this.serviceRepository.findOne(id);
+  async findOneBy(id: number) {
+    return await this.serviceRepository.findOneBy({id});
   }
 
   async findById(serviceId: number) {
-    return await this.serviceRepository.findOneOrFail(serviceId);
+    return await this.serviceRepository.findOneOrFail({ where: { id: serviceId } });
   }
 
   async update(id: number, updateServiceDto: UpdateServiceDto) {
@@ -66,7 +66,7 @@ export class ServicesService {
   }
 
   async remove(id: number) {
-    const service = await this.serviceRepository.findOne(id);
+    const service = await this.serviceRepository.findOneBy({id});
 
     if (!service) {
       throw new NotFoundException(`Service with id ${id} does not exist`);
@@ -76,7 +76,7 @@ export class ServicesService {
   }
 
   async toggleStatus(id: number) {
-    let service = await this.serviceRepository.findOne({ where: { id: id }} )
+    let service = await this.serviceRepository.findOneBy({id: id })
     service.active = !service.active
     this.serviceRepository.save(service)
   }

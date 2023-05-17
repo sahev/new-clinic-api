@@ -81,8 +81,8 @@ export class PatientsController {
     type: DefaultColumnsResponse,
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.patientsService.findOne(+id);
+  findOneBy(@Param('id') id: string) {
+    return this.patientsService.findOneBy(+id);
   }
 
   @ApiBearerAuth('access-token')

@@ -16,7 +16,7 @@ export class ClinicsService {
   ) { }
 
   async create (createClinicDto: CreateClinicDto) {
-    const clinic = await this.clinicRepository.findOne({
+    const clinic = await this.clinicRepository.findOneBy({
       alias: createClinicDto.alias,
       headQuarterId: createClinicDto.headQuarterId
     });
@@ -47,7 +47,7 @@ export class ClinicsService {
     let clinicalUnits = await this.clinicRepository.find({
       where: { headQuarterId: id }
     })
-    let clinic = await this.clinicRepository.findOne(id);
+    let clinic = await this.clinicRepository.findOneBy({ id });
 
     clinic.clinicalUnits = clinicalUnits
 
@@ -55,7 +55,7 @@ export class ClinicsService {
   }
 
   async findById (clinicId: number) {
-    return await this.clinicRepository.findOneOrFail(clinicId);
+    return await this.clinicRepository.findOneByOrFail({ id: clinicId });
   }
 
   async findByAlias (alias: string) {
@@ -77,7 +77,7 @@ export class ClinicsService {
   }
 
   async remove (id: number) {
-    const clinic = await this.clinicRepository.findOne(id);
+    const clinic = await this.clinicRepository.findOneBy({ id });
 
     if (!clinic) {
       throw new NotFoundException(`User with id ${id} does not exist`);
@@ -87,7 +87,7 @@ export class ClinicsService {
   }
 
   async toggleStatus (id: number) {
-    let clinic = await this.clinicRepository.findOne({ where: { id: id } })
+    let clinic = await this.clinicRepository.findOneBy({ id })
     clinic.active = !clinic.active
     this.clinicRepository.save(clinic)
   }

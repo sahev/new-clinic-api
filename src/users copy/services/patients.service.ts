@@ -21,7 +21,7 @@ export class PatientsService {
   ) {}
 
   async create(createUserDto: CreatePatientDto) {
-    const user = await this.patientRepository.findOne({
+    const user = await this.patientRepository.findOneBy({
       email: createUserDto.email,
     });
 
@@ -45,7 +45,7 @@ export class PatientsService {
   async findAllByClinicId(id: number) {
     return this.patientRepository.find({
       where: [
-        { clinicId: id, role: Not('super')  }
+        { clinicId: id, role: Not(Role.SUPER)  }
       ],
       relations: ['contact']
     });
@@ -54,8 +54,8 @@ export class PatientsService {
   async findAllByHeadQuarterId(id: number) {
     return this.patientRepository.find({
       where: [
-        { clinicId: id, role: Not('super')  },
-        { headQuarterId: id, role: Not('super')  }
+        { clinicId: id, role: Not(Role.SUPER)  },
+        { headQuarterId: id, role: Not(Role.SUPER)  }
       ],
       relations: ['contact']
     });
@@ -68,8 +68,8 @@ export class PatientsService {
     });
   }
 
-  async findOne(id: number) {
-    return await getRepository(Patient).findOne({
+  async findOneBy(id: number) {
+    return await this.patientRepository.findOne({
       where: { id },
       relations: ['contact']
     });
@@ -87,7 +87,7 @@ export class PatientsService {
   }
 
   async findById(userId: number) {
-    return await this.patientRepository.findOneOrFail(userId);
+    return await this.patientRepository.findOneByOrFail({id: userId});
   }
 
   async findByEmail(email: string) {
@@ -121,7 +121,7 @@ export class PatientsService {
   }
 
   async remove(id: number) {
-    const user = await this.patientRepository.findOne(id);
+    const user = await this.patientRepository.findOneBy({id});
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} does not exist`);
@@ -151,13 +151,16 @@ export class PatientsService {
     );
   }
 
-  async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
-    const user = await this.patientRepository.findOne({
-      select: ['id', 'refreshToken', 'role'],
-      where: { id: userId },
-    });
+  async getUserIfRefreshTokenMatches(refreshTokenn: string, userId: number) {
+    const {id, refreshToken, role} = await this.patientRepository.findOneBy({ id: userId });
 
-    const hash = createHash('sha256').update(refreshToken).digest('hex');
+    const user = {
+      id,
+      refreshToken,
+      role
+    }
+
+    const hash = createHash('sha256').update(refreshTokenn).digest('hex');
     const isRefreshTokenMatching = await bcrypt.compare(
       hash,
       user.refreshToken,

@@ -56,8 +56,8 @@ export class ServicesController {
     type: DefaultColumnsResponse,
   })
   @Get('id/:id')
-  findOne(@Param('id') id: number) {
-    return this.serviceService.findOne(+id);
+  findOneBy(@Param('id') id: number) {
+    return this.serviceService.findOneBy(+id);
   }
 
   @Public()

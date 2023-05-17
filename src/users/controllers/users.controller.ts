@@ -94,8 +94,8 @@ export class UsersController {
     type: DefaultColumnsResponse,
   })
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOneBy(@Param('id') id: string) {
+    return this.usersService.findOneBy(+id);
   }
 
   @ApiBearerAuth('access-token')
