@@ -21,5 +21,7 @@ RUN npm run build
 
 EXPOSE 3000 3131 3232
 
+ENV NODE_ENV
+
 # Start the server using the production build
-CMD [ "npm", "run", "start${{ cat ~/run/env }}:linux" ]
+CMD [ "npm", "run", "start$NODE_ENV:linux" ]
