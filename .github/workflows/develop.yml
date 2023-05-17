@@ -3,9 +3,6 @@ on:
   push:
     branches: [ develop ]
 jobs:
-
-
-
   update:
     name: checkout
     runs-on: ubuntu-latest
@@ -13,7 +10,10 @@ jobs:
       name: development
     steps:
     - name: 'Set env file'
-        run: |
+      id: envfile
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
           touch .env
           echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
           echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env
@@ -34,6 +34,9 @@ jobs:
           echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> .env
 
           cat .env
+        host: ${{ vars.HOST }}
+        user: ${{ vars.SSH_USER }}
+        key: ${{ secrets.SECRET_KEY }}
     - name: Updating repository
       id: checkout
       uses: fifsky/ssh-action@master
