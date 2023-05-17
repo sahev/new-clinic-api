@@ -14,6 +14,7 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          echo dev >> ~/run/env
           touch ~/envs/development
           rm -f ~/envs/development
 

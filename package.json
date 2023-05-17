@@ -22,6 +22,8 @@
     "start:debug": "nest start --debug --watch",
     "start:build": "node dist/src/main",
     "startdev:linux": "export $(cat ~/envs/development | xargs) && npm run start:build",
+    "startprd:linux": "export $(cat ~/envs/production | xargs) && npm run start:build",
+    "starthml:linux": "export $(cat ~/envs/staging | xargs) && npm run start:build",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
