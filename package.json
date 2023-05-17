@@ -16,6 +16,7 @@
     "seed:one": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed -s",
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "postbuild": "cp package*.json dist && cd dist && npm ci --production",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

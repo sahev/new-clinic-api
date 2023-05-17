@@ -14,4 +14,4 @@ RUN npm install && npm run build
 # Bundle app source
 COPY . .
 EXPOSE 3000
-CMD [ "node", "dist/main" ]
+CMD [ "node", "dist/src/main" ]
