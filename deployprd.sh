@@ -13,12 +13,12 @@ echo "built docker images and proceeding to delete existing container"
 result=$( docker ps -q -f name=eclinic )
 if [[ $? -eq 0 ]]; then
 echo "Removing container"
-sudo docker container rm -f eclinic
+docker container rm -f eclinic
 echo "Deleted the existing docker container"
 else
 echo "No such container"
 fi
 
 echo "Deploying the updated container"
-sudo docker run -itd -p 3000:3000 -d --name eclinic
+docker run -itd -p 3000:3000 -d --name eclinic
 echo "Deploying the container"
