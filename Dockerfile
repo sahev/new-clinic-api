@@ -13,14 +13,12 @@ WORKDIR /usr/src/app
 COPY --chown=node:node package*.json ./
 
 # Install app dependencies using the `npm ci` command instead of `npm install`
-RUN npm ci
+RUN npm install --only=production
 
-# Bundle app source
-COPY --chown=node:node . .
+COPY . .
 
-# Use the node user from the image (instead of the root user)
-USER node
+RUN npm run build
 
 EXPOSE 3000
 # Start the server using the production build
-CMD [ "node", "dist/src/main.js" ]
+CMD [ "npm", "run", "start:linux" ]
