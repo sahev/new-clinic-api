@@ -15,7 +15,7 @@ jobs:
       with:
         command: |
           touch ~/envs/development
-          echo NODE_ENV=${{ vars.NODE_ENV }} >> ~/envs/development.env
+          echo NODE_ENV=${{ vars.NODE_ENV }} >> ~/envs/development
           echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> ~/envs/development
           echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> ~/envs/development
 
