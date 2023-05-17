@@ -11,11 +11,13 @@ import { CategoriesModule } from './categories/categories.module';
 import { ServicesModule } from './services/services.module';
 import { HealthModule } from './healthcheck/healthcheck.module';
 
+console.log(enviroments, process.env.NODE_ENV,enviroments[process.env.NODE_ENV],' aqui')
+
 @Module({
   imports: [
     ConfigModule.forRoot({
-      // envFilePath: enviroments[process.env.NODE_ENV] || '.env',
-      envFilePath: '.env',
+      envFilePath: enviroments[process.env.NODE_ENV] || '.env',
+      // envFilePath: '.env',
       load: [config],
       isGlobal: true,
       validationSchema: Joi.object({
