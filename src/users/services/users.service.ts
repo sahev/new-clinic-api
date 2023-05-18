@@ -24,8 +24,10 @@ export class UsersService {
   ) { }
 
   async create (createUserDto: CreateUserDto | CreateAdminDto) {
-    const user = await this.userRepository.findOneBy({
-      email: createUserDto.email,
+    const user = await this.userRepository.findOne({
+      where: {
+        email: createUserDto.email,
+      }
     });
 
     if (user) {
@@ -65,10 +67,13 @@ export class UsersService {
   }
 
   async findByEmailAndGetPassword (email: string) {
-    const {id, password, role, clinicId} = await this.userRepository.findOneBy(
-      { email }
-    );
-    return {id, password, role, clinicId}
+    const user = await this.userRepository.findOne({
+      where: {
+        email
+      },
+      select: ['id', 'password', 'role', 'clinicId']
+    });
+    return user
   }
 
   async findOneBy (id: number) {
