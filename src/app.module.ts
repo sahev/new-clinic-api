@@ -11,8 +11,6 @@ import { CategoriesModule } from './categories/categories.module';
 import { ServicesModule } from './services/services.module';
 import { HealthModule } from './healthcheck/healthcheck.module';
 
-console.log(enviroments, process.env.NODE_ENV,enviroments[process.env.NODE_ENV],' aqui')
-
 @Module({
   imports: [
     ConfigModule.forRoot({

@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { HealthCheckService, HttpHealthIndicator, HealthCheck, TypeOrmHealthIndicator } from '@nestjs/terminus';
+import { HealthCheckService, HttpHealthIndicator, HealthCheck, TypeOrmHealthIndicator, DiskHealthIndicator } from '@nestjs/terminus';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('health')
@@ -11,16 +11,25 @@ export class HealthController {
     private db: TypeOrmHealthIndicator,
   ) {}
 
-  @ApiOperation({ summary: 'create a service' })
+  @ApiOperation({ summary: 'Ping database check' })
   @ApiResponse({
     status: 200
   })
   @Public()
   @Get()
   @HealthCheck()
-  check() {
-    return this.health.check([
+  async check() {
+    let startTime = Date.now();
+
+    const pingResponse = await this.health.check([
       () => this.db.pingCheck('database'),
     ]);
+
+    let elapsedTime = ((Date.now() - startTime) / 1000).toFixed(3);
+
+    return {
+      ping: elapsedTime,
+      ...pingResponse
+    }
   }
 }
