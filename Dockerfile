@@ -21,8 +21,6 @@ RUN npm install -f
 
 COPY . .
 
-COPY /home/opc/envs/* .
-
 RUN npm run build
 
 EXPOSE 3000 3131 3232
