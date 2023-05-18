@@ -23,7 +23,7 @@ EXPOSE 3000 3131 3232
 
 ARG NODE_ENV=dev
 
-ENV NODE_ENV=$NODE_ENV
+ENV env_NODE_ENV=$NODE_ENV
 
 # Start the server using the production build
-CMD [ "npm", "run", "start$NODE_ENV:linux" ]
+CMD [ "npm", "run", "start${env_NODE_ENV}:linux" ]
