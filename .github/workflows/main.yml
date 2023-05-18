@@ -63,28 +63,29 @@ jobs:
       with:
         command: |
           echo hml >> ~/run/env
-          touch ~/envs/staging
-          rm -f ~/envs/staging
+          cd hml/${{ github.event.repository.name }}
+          touch .env.staging
+          rm -f .env.staging
 
-          echo NODE_ENV=${{ vars.NODE_ENV }} >> ~/envs/staging
-          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> ~/envs/staging
-          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> ~/envs/staging
+          echo NODE_ENV=${{ vars.NODE_ENV }} >> .env.staging
+          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env.staging
+          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> .env.staging
 
-          echo DB_TYPE=${{ vars.DB_TYPE }} >> ~/envs/staging
-          echo DB_NAME=${{ vars.DB_NAME }} >> ~/envs/staging
-          echo DB_PORT=${{ vars.DB_PORT }} >> ~/envs/staging
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> ~/envs/staging
-          echo DB_USER=${{ vars.DB_USER }} >> ~/envs/staging
-          echo DB_HOST=${{ vars.DB_HOST }} >> ~/envs/staging
-          echo DB_SSL=${{ vars.DB_SSL }} >> ~/envs/staging
+          echo DB_TYPE=${{ vars.DB_TYPE }} >> .env.staging
+          echo DB_NAME=${{ vars.DB_NAME }} >> .env.staging
+          echo DB_PORT=${{ vars.DB_PORT }} >> .env.staging
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env.staging
+          echo DB_USER=${{ vars.DB_USER }} >> .env.staging
+          echo DB_HOST=${{ vars.DB_HOST }} >> .env.staging
+          echo DB_SSL=${{ vars.DB_SSL }} >> .env.staging
 
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> ~/envs/staging
-          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> ~/envs/staging
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.staging
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env.staging
 
-          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> ~/envs/staging
-          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> ~/envs/staging
+          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> .env.staging
+          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> .env.staging
 
-          cat ~/envs/staging
+          cat .env.staging
         host: ${{ vars.HOST }}
         user: ${{ vars.SSH_USER }}
         key: ${{ secrets.SECRET_KEY }}
@@ -144,28 +145,29 @@ jobs:
       with:
         command: |
           echo prd >> ~/run/env
-          touch ~/envs/production
-          rm -f ~/envs/production
+          cd prd/${{ github.event.repository.name }}
+          touch .env.production
+          rm -f .env.production
 
-          echo NODE_ENV=${{ vars.NODE_ENV }} >> ~/envs/production
-          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> ~/envs/production
-          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> ~/envs/production
+          echo NODE_ENV=${{ vars.NODE_ENV }} >> .env.production
+          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env.production
+          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> .env.production
 
-          echo DB_TYPE=${{ vars.DB_TYPE }} >> ~/envs/production
-          echo DB_NAME=${{ vars.DB_NAME }} >> ~/envs/production
-          echo DB_PORT=${{ vars.DB_PORT }} >> ~/envs/production
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> ~/envs/production
-          echo DB_USER=${{ vars.DB_USER }} >> ~/envs/production
-          echo DB_HOST=${{ vars.DB_HOST }} >> ~/envs/production
-          echo DB_SSL=${{ vars.DB_SSL }} >> ~/envs/production
+          echo DB_TYPE=${{ vars.DB_TYPE }} >> .env.production
+          echo DB_NAME=${{ vars.DB_NAME }} >> .env.production
+          echo DB_PORT=${{ vars.DB_PORT }} >> .env.production
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env.production
+          echo DB_USER=${{ vars.DB_USER }} >> .env.production
+          echo DB_HOST=${{ vars.DB_HOST }} >> .env.production
+          echo DB_SSL=${{ vars.DB_SSL }} >> .env.production
 
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> ~/envs/production
-          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> ~/envs/production
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.production
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env.production
 
-          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> ~/envs/production
-          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> ~/envs/production
+          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> .env.production
+          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> .env.production
 
-          cat ~/envs/production
+          cat .env.production
         host: ${{ vars.HOST }}
         user: ${{ vars.SSH_USER }}
         key: ${{ secrets.SECRET_KEY }}

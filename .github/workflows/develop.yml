@@ -15,28 +15,29 @@ jobs:
       with:
         command: |
           echo dev >> ~/run/env
-          touch ~/envs/.env.development
-          rm -f ~/envs/.env.development
+          cd dev/${{ github.event.repository.name }}
+          touch .env.development
+          rm -f .env.development
 
-          echo NODE_ENV=${{ vars.NODE_ENV }} >> ~/envs/.env.development
-          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> ~/envs/.env.development
-          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> ~/envs/.env.development
+          echo NODE_ENV=${{ vars.NODE_ENV }} >> .env.development
+          echo API_PORT=${{ vars.INTERNAL_APP_PORT }} >> .env.development
+          echo ENABLE_CORS=${{ vars.ENABLE_CORS }} >> .env.development
 
-          echo DB_TYPE=${{ vars.DB_TYPE }} >> ~/envs/.env.development
-          echo DB_NAME=${{ vars.DB_NAME }} >> ~/envs/.env.development
-          echo DB_PORT=${{ vars.DB_PORT }} >> ~/envs/.env.development
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> ~/envs/.env.development
-          echo DB_USER=${{ vars.DB_USER }} >> ~/envs/.env.development
-          echo DB_HOST=${{ vars.DB_HOST }} >> ~/envs/.env.development
-          echo DB_SSL=${{ vars.DB_SSL }} >> ~/envs/.env.development
+          echo DB_TYPE=${{ vars.DB_TYPE }} >> .env.development
+          echo DB_NAME=${{ vars.DB_NAME }} >> .env.development
+          echo DB_PORT=${{ vars.DB_PORT }} >> .env.development
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env.development
+          echo DB_USER=${{ vars.DB_USER }} >> .env.development
+          echo DB_HOST=${{ vars.DB_HOST }} >> .env.development
+          echo DB_SSL=${{ vars.DB_SSL }} >> .env.development
 
-          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> ~/envs/.env.development
-          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> ~/envs/.env.development
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.development
+          echo JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} >> .env.development
 
-          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> ~/envs/.env.development
-          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> ~/envs/.env.development
+          echo ACCESS_TOKEN_EXPIRATION=${{ vars.ACCESS_TOKEN_EXPIRATION }} >> .env.development
+          echo REFRESH_TOKEN_EXPIRATION=${{ vars.REFRESH_TOKEN_EXPIRATION }} >> .env.development
 
-          cat ~/envs/.env.development
+          cat .env.development
         host: ${{ vars.HOST }}
         user: ${{ vars.SSH_USER }}
         key: ${{ secrets.SECRET_KEY }}
