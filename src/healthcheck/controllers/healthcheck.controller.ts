@@ -22,7 +22,7 @@ export class HealthController {
     let startTime = Date.now();
 
     const pingResponse = await this.health.check([
-      () => this.db.pingCheck('database'),
+      () => this.db.pingCheck('database', { timeout: 10000 }),
     ]);
 
     let elapsedTime = ((Date.now() - startTime) / 1000).toFixed(3);
