@@ -1,6 +1,6 @@
 export const enviroments = {
   local: '.env',
-  development: '~/envs/development',
-  staging: '~/envs/staging',
-  production: '~/envs/production',
+  development: '/home/opc/envs/development',
+  staging: '/home/opc/envs/staging',
+  production: '/home/opc/envs/production',
 };
