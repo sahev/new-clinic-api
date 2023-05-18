@@ -26,4 +26,4 @@ ARG NODE_ENV=dev
 ENV env_NODE_ENV=$NODE_ENV
 
 # Start the server using the production build
-CMD [ "npm", "run", "start${env_NODE_ENV}:linux" ]
+CMD npm run start$env_NODE_ENV:linux
