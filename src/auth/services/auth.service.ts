@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import { compare } from 'bcrypt';
 import config from '../../config';
 import { UsersService } from '../../users/services/users.service';
 import { PayloadToken } from './../models/token.model';
@@ -25,7 +25,7 @@ export class AuthService {
 
     if (user) {
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await compare(password, user.password);
 
       if (isMatch) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
