@@ -129,7 +129,7 @@ jobs:
       with:
         command: |
           cd dev/${{ github.event.repository.name }}
-          docker rmi $(head -1 old_image_id.txt)
+          if [ `wc -c old_image_id.txt | awk '{print $1}'` -ge "6" ]; then docker rmi $(head -1 old_image_id.txt); fi
 
         host: ${{ vars.HOST }}
         user: ${{ vars.SSH_USER }}
