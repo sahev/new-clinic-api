@@ -105,11 +105,12 @@ export class UsersService {
   }
 
   async emailExists (email: string) {
-    const user = await this.userRepository.find({
+    const user = await this.userRepository.findOne({
       where: { email },
     });
 
-    if (user.length > 0) return true;
+    if (user)
+      return user.id
 
     return false;
   }
