@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateClinicDto, UpdateClinicDto } from '../dto/create-clinic.dto';
 import { Clinic } from '../entities/clinic.entity';
 

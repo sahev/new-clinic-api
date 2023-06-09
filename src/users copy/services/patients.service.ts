@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
-import { Not, Like, Repository, getRepository } from 'typeorm';
+import { Not, Like, Repository } from 'typeorm';
 import {
   CreatePatientDto,
   UpdatePatientDto,

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateServiceDto, UpdateServiceDto } from '../dto/create-service.dto';
 import { Service } from '../entities/service.entity';
 
@@ -29,7 +29,7 @@ export class ServicesService {
 
     let saved = await this.serviceRepository.save(createdService);
 
-    let res = await getRepository(Service).findOne({
+    let res = await this.serviceRepository.findOne({
       where: { clinicId: saved.clinicId, id: saved.id },
       relations: ['category']
    })
@@ -39,7 +39,7 @@ export class ServicesService {
   }
 
   async findAll(id: number) {
-    return await getRepository(Service).find({
+    return await this.serviceRepository.find({
       where: { clinicId: id },
       relations: ['category']
    })
