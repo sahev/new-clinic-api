@@ -39,7 +39,10 @@ export class ClinicsService {
 
   async findAll (id: number) {
     return this.clinicRepository.find({
-      where: { headQuarterId: id }
+      where: [
+        { headQuarterId: id },
+        { id }
+      ]
     });
   }
 
