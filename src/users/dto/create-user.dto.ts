@@ -66,6 +66,10 @@ export class CreateUserDto {
   @ApiProperty()
   @IsOptional()
   readonly profileImage: Buffer;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly color: string;
 }
 
 export class CreateAdminDto extends CreateUserDto {

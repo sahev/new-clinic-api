@@ -69,6 +69,9 @@ export class User extends DefaultEntity {
   @JoinColumn({name: 'contactId'})
   contact: Contact;
 
+  @Column({default: null})
+  color: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
