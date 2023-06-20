@@ -26,8 +26,5 @@ export class Clinic extends DefaultEntity {
   @Column({ default: null })
   description: string;
 
-  @Column({ default: null })
-  color: string;
-
   clinicalUnits: Clinic[];
 }

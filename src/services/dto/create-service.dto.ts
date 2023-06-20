@@ -24,6 +24,10 @@ export class CreateServiceDto {
 
   @ApiProperty()
   readonly active: boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly color: string;
 }
 
 export class UpdateServiceDto extends PartialType(CreateServiceDto) {}

@@ -24,4 +24,7 @@ export class Service extends DefaultEntity {
 
   @ManyToOne(() => Category, (category) => category.services)
   category: Category;
+
+  @Column({default: null})
+  color: string;
 }

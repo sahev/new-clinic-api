@@ -28,10 +28,6 @@ export class CreateClinicDto {
   @ApiProperty()
   @IsOptional()
   readonly description: string;
-
-  @ApiProperty()
-  @IsOptional()
-  readonly color: string;
 }
 
 export class UpdateClinicDto extends PartialType(CreateClinicDto) {}
